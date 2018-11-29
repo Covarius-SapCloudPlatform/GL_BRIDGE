@@ -1,0 +1,8 @@
+service {
+"COV_PKG_GL_BRIDGE.COV_PKG_DB/COV_CV_GL_RESULTS.calculationview" as "GLResults" keys ("SAP_DOCUMENT","ITEM_NO", "COMPANY_CODE", "FISCAL_YEAR")
+aggregates always;
+}
+
+annotations {
+enable OData4SAP;
+}

@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="COV_CV_GL_RESULTS" applyPrivilegeType="ANALYTIC_PRIVILEGE" dataCategory="CUBE" schemaVersion="2.3" defaultClient="$$client$$" visibility="reportingEnabled" outputViewType="Aggregation" calculationScenarioType="TREE_BASED" enforceSqlExecution="false">
+<descriptions defaultDescription="GL Posting Results"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="COV_RESULT_GL_HEADER" type="DATA_BASE_TABLE">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="COV_SCH_GL_BRIDGE" columnObjectName="COV_RESULT_GL_HEADER"/>
+  </DataSource>
+  <DataSource id="COV_RESULT_GL_ITEM" type="DATA_BASE_TABLE">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="COV_SCH_GL_BRIDGE" columnObjectName="COV_RESULT_GL_ITEM"/>
+  </DataSource>
+  <DataSource id="COV_RESULT_GL_CURRENCY" type="DATA_BASE_TABLE">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="COV_SCH_GL_BRIDGE" columnObjectName="COV_RESULT_GL_CURRENCY"/>
+  </DataSource>
+</dataSources>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="GL_HEADER">
+    <viewAttributes>
+      <viewAttribute id="ACCOUNTING_PRINCIPLE"/>
+      <viewAttribute id="ACCOUNT_TYPE"/>
+      <viewAttribute id="BILLING_CATEGORY"/>
+      <viewAttribute id="BUSINESS_TRANSACTION"/>
+      <viewAttribute id="COMPANY_CODE"/>
+      <viewAttribute id="DOCUMENT_DATE"/>
+      <viewAttribute id="DOCUMENT_STATUS"/>
+      <viewAttribute id="DOCUMENT_STATUS_DESCRIPTION"/>
+      <viewAttribute id="DOCUMENT_TYPE"/>
+      <viewAttribute id="ENTRY_DATE"/>
+      <viewAttribute id="FISCAL_PERIOD"/>
+      <viewAttribute id="FISCAL_YEAR"/>
+      <viewAttribute id="HEADERTEXT"/>
+      <viewAttribute id="MESSAGE_GUID"/>
+      <viewAttribute id="POSTING_DATE"/>
+      <viewAttribute id="POST_INDICATOR"/>
+      <viewAttribute id="REFERENCE_DOCUMENT"/>
+      <viewAttribute id="REFERENCE_DOC_NO_LONG"/>
+      <viewAttribute id="REFERENCE_KEY"/>
+      <viewAttribute id="SAP_DOCUMENT"/>
+      <viewAttribute id="STATUS_CODE"/>
+      <viewAttribute id="STATUS_MESSAGE"/>
+      <viewAttribute id="TRANSLATION_DATE"/>
+      <viewAttribute id="UPDATE_GUID"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#COV_RESULT_GL_HEADER">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ACCOUNTING_PRINCIPLE" source="ACCOUNTING_PRINCIPLE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ACCOUNT_TYPE" source="ACCOUNT_TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BILLING_CATEGORY" source="BILLING_CATEGORY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BUSINESS_TRANSACTION" source="BUSINESS_TRANSACTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANY_CODE" source="COMPANY_CODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_DATE" source="DOCUMENT_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_STATUS" source="DOCUMENT_STATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_STATUS_DESCRIPTION" source="DOCUMENT_STATUS_DESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_TYPE" source="DOCUMENT_TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ENTRY_DATE" source="ENTRY_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FISCAL_PERIOD" source="FISCAL_PERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FISCAL_YEAR" source="FISCAL_YEAR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="HEADERTEXT" source="HEADERTEXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MESSAGE_GUID" source="MESSAGE_GUID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTING_DATE" source="POSTING_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POST_INDICATOR" source="POST_INDICATOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REFERENCE_DOCUMENT" source="REFERENCE_DOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REFERENCE_DOC_NO_LONG" source="REFERENCE_DOC_NO_LONG"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REFERENCE_KEY" source="REFERENCE_KEY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DOCUMENT" source="SAP_DOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS_CODE" source="STATUS_CODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS_MESSAGE" source="STATUS_MESSAGE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TRANSLATION_DATE" source="TRANSLATION_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="UPDATE_GUID" source="UPDATE_GUID"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="GL_ITEM">
+    <viewAttributes>
+      <viewAttribute id="ACCOUNT_TYPE"/>
+      <viewAttribute id="ASSIGNMENT_NUMBER"/>
+      <viewAttribute id="COMPANY_CODE"/>
+      <viewAttribute id="COST_CENTER"/>
+      <viewAttribute id="CUSTOMER"/>
+      <viewAttribute id="DOCUMENT_TYPE"/>
+      <viewAttribute id="ENTRY_DATE"/>
+      <viewAttribute id="FISCAL_PERIOD"/>
+      <viewAttribute id="FISCAL_YEAR"/>
+      <viewAttribute id="GL_ACCOUNT"/>
+      <viewAttribute id="ITEM_NO"/>
+      <viewAttribute id="ITEM_TEXT"/>
+      <viewAttribute id="PARTNER_PROFIT_CENTER"/>
+      <viewAttribute id="POSTING_DATE"/>
+      <viewAttribute id="PROFIT_CENTER"/>
+      <viewAttribute id="REF_KEY1"/>
+      <viewAttribute id="REF_KEY2"/>
+      <viewAttribute id="REF_KEY3"/>
+      <viewAttribute id="SAP_DOCUMENT"/>
+      <viewAttribute id="TRADING_PARTNER"/>
+      <viewAttribute id="VALUE_DATE"/>
+      <viewAttribute id="VENDOR"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#COV_RESULT_GL_ITEM">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ACCOUNT_TYPE" source="ACCOUNT_TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ASSIGNMENT_NUMBER" source="ASSIGNMENT_NUMBER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANY_CODE" source="COMPANY_CODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COST_CENTER" source="COST_CENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CUSTOMER" source="CUSTOMER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_TYPE" source="DOCUMENT_TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ENTRY_DATE" source="ENTRY_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FISCAL_PERIOD" source="FISCAL_PERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FISCAL_YEAR" source="FISCAL_YEAR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GL_ACCOUNT" source="GL_ACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_NO" source="ITEM_NO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_TEXT" source="ITEM_TEXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PARTNER_PROFIT_CENTER" source="PARTNER_PROFIT_CENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTING_DATE" source="POSTING_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PROFIT_CENTER" source="PROFIT_CENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REF_KEY1" source="REF_KEY1"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REF_KEY2" source="REF_KEY2"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REF_KEY3" source="REF_KEY3"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DOCUMENT" source="SAP_DOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TRADING_PARTNER" source="TRADING_PARTNER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="VALUE_DATE" source="VALUE_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="VENDOR" source="VENDOR"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="GL_CURRENCY">
+    <viewAttributes>
+      <viewAttribute id="AMOUNT"/>
+      <viewAttribute id="AMOUNT_BASE"/>
+      <viewAttribute id="COMPANY_CODE"/>
+      <viewAttribute id="CURRENCY"/>
+      <viewAttribute id="CURRENCY_ISO"/>
+      <viewAttribute id="CURRENCY_TYPE"/>
+      <viewAttribute id="DISCOUNT_AMOUNT"/>
+      <viewAttribute id="DISCOUNT_BASE"/>
+      <viewAttribute id="ENTRY_DATE"/>
+      <viewAttribute id="EXCHANGE_RATE"/>
+      <viewAttribute id="FISCAL_YEAR"/>
+      <viewAttribute id="INDIRECT_EXCHANGE_RATE"/>
+      <viewAttribute id="ITEM_NO"/>
+      <viewAttribute id="SAP_DOCUMENT"/>
+      <viewAttribute id="TAX_AMOUNT"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#COV_RESULT_GL_CURRENCY">
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT" source="AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT_BASE" source="AMOUNT_BASE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANY_CODE" source="COMPANY_CODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCY" source="CURRENCY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCY_ISO" source="CURRENCY_ISO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCY_TYPE" source="CURRENCY_TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DISCOUNT_AMOUNT" source="DISCOUNT_AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DISCOUNT_BASE" source="DISCOUNT_BASE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ENTRY_DATE" source="ENTRY_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EXCHANGE_RATE" source="EXCHANGE_RATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FISCAL_YEAR" source="FISCAL_YEAR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="INDIRECT_EXCHANGE_RATE" source="INDIRECT_EXCHANGE_RATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_NO" source="ITEM_NO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DOCUMENT" source="SAP_DOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TAX_AMOUNT" source="TAX_AMOUNT"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinType="inner" cardinality="C1_N">
+    <viewAttributes>
+      <viewAttribute id="ACCOUNTING_PRINCIPLE"/>
+      <viewAttribute id="ACCOUNT_TYPE"/>
+      <viewAttribute id="BILLING_CATEGORY"/>
+      <viewAttribute id="BUSINESS_TRANSACTION"/>
+      <viewAttribute id="COMPANY_CODE"/>
+      <viewAttribute id="DOCUMENT_DATE"/>
+      <viewAttribute id="DOCUMENT_STATUS"/>
+      <viewAttribute id="DOCUMENT_STATUS_DESCRIPTION"/>
+      <viewAttribute id="DOCUMENT_TYPE"/>
+      <viewAttribute id="ENTRY_DATE"/>
+      <viewAttribute id="FISCAL_PERIOD"/>
+      <viewAttribute id="FISCAL_YEAR"/>
+      <viewAttribute id="HEADERTEXT"/>
+      <viewAttribute id="MESSAGE_GUID"/>
+      <viewAttribute id="POSTING_DATE"/>
+      <viewAttribute id="POST_INDICATOR"/>
+      <viewAttribute id="REFERENCE_DOCUMENT"/>
+      <viewAttribute id="REFERENCE_DOC_NO_LONG"/>
+      <viewAttribute id="REFERENCE_KEY"/>
+      <viewAttribute id="SAP_DOCUMENT"/>
+      <viewAttribute id="STATUS_CODE"/>
+      <viewAttribute id="STATUS_MESSAGE"/>
+      <viewAttribute id="TRANSLATION_DATE"/>
+      <viewAttribute id="UPDATE_GUID"/>
+      <viewAttribute id="COST_CENTER"/>
+      <viewAttribute id="GL_ACCOUNT"/>
+      <viewAttribute id="ITEM_NO"/>
+      <viewAttribute id="ITEM_TEXT"/>
+      <viewAttribute id="PARTNER_PROFIT_CENTER"/>
+      <viewAttribute id="PROFIT_CENTER"/>
+      <viewAttribute id="TRADING_PARTNER"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#GL_HEADER">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ACCOUNTING_PRINCIPLE" source="ACCOUNTING_PRINCIPLE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ACCOUNT_TYPE" source="ACCOUNT_TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BILLING_CATEGORY" source="BILLING_CATEGORY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BUSINESS_TRANSACTION" source="BUSINESS_TRANSACTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANY_CODE" source="COMPANY_CODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_DATE" source="DOCUMENT_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_STATUS" source="DOCUMENT_STATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_STATUS_DESCRIPTION" source="DOCUMENT_STATUS_DESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_TYPE" source="DOCUMENT_TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ENTRY_DATE" source="ENTRY_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FISCAL_PERIOD" source="FISCAL_PERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FISCAL_YEAR" source="FISCAL_YEAR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="HEADERTEXT" source="HEADERTEXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MESSAGE_GUID" source="MESSAGE_GUID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTING_DATE" source="POSTING_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POST_INDICATOR" source="POST_INDICATOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REFERENCE_DOCUMENT" source="REFERENCE_DOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REFERENCE_DOC_NO_LONG" source="REFERENCE_DOC_NO_LONG"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REFERENCE_KEY" source="REFERENCE_KEY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DOCUMENT" source="SAP_DOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS_CODE" source="STATUS_CODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS_MESSAGE" source="STATUS_MESSAGE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TRANSLATION_DATE" source="TRANSLATION_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="UPDATE_GUID" source="UPDATE_GUID"/>
+    </input>
+    <input node="#GL_ITEM">
+      <mapping xsi:type="Calculation:AttributeMapping" target="COST_CENTER" source="COST_CENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GL_ACCOUNT" source="GL_ACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_NO" source="ITEM_NO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_TEXT" source="ITEM_TEXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PARTNER_PROFIT_CENTER" source="PARTNER_PROFIT_CENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PROFIT_CENTER" source="PROFIT_CENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TRADING_PARTNER" source="TRADING_PARTNER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DOCUMENT" source="SAP_DOCUMENT"/>
+    </input>
+    <joinAttribute name="SAP_DOCUMENT"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinType="inner" cardinality="C1_1">
+    <viewAttributes>
+      <viewAttribute id="ACCOUNTING_PRINCIPLE"/>
+      <viewAttribute id="ACCOUNT_TYPE"/>
+      <viewAttribute id="BILLING_CATEGORY"/>
+      <viewAttribute id="BUSINESS_TRANSACTION"/>
+      <viewAttribute id="COMPANY_CODE"/>
+      <viewAttribute id="DOCUMENT_DATE"/>
+      <viewAttribute id="DOCUMENT_STATUS"/>
+      <viewAttribute id="DOCUMENT_STATUS_DESCRIPTION"/>
+      <viewAttribute id="DOCUMENT_TYPE"/>
+      <viewAttribute id="ENTRY_DATE"/>
+      <viewAttribute id="FISCAL_PERIOD"/>
+      <viewAttribute id="FISCAL_YEAR"/>
+      <viewAttribute id="HEADERTEXT"/>
+      <viewAttribute id="MESSAGE_GUID"/>
+      <viewAttribute id="POSTING_DATE"/>
+      <viewAttribute id="POST_INDICATOR"/>
+      <viewAttribute id="REFERENCE_DOCUMENT"/>
+      <viewAttribute id="REFERENCE_DOC_NO_LONG"/>
+      <viewAttribute id="REFERENCE_KEY"/>
+      <viewAttribute id="SAP_DOCUMENT"/>
+      <viewAttribute id="STATUS_CODE"/>
+      <viewAttribute id="STATUS_MESSAGE"/>
+      <viewAttribute id="TRANSLATION_DATE"/>
+      <viewAttribute id="UPDATE_GUID"/>
+      <viewAttribute id="COST_CENTER"/>
+      <viewAttribute id="GL_ACCOUNT"/>
+      <viewAttribute id="ITEM_NO"/>
+      <viewAttribute id="ITEM_TEXT"/>
+      <viewAttribute id="PARTNER_PROFIT_CENTER"/>
+      <viewAttribute id="PROFIT_CENTER"/>
+      <viewAttribute id="TRADING_PARTNER"/>
+      <viewAttribute id="AMOUNT"/>
+      <viewAttribute id="AMOUNT_BASE"/>
+      <viewAttribute id="CURRENCY"/>
+      <viewAttribute id="CURRENCY_ISO"/>
+      <viewAttribute id="CURRENCY_TYPE"/>
+      <viewAttribute id="DISCOUNT_AMOUNT"/>
+      <viewAttribute id="DISCOUNT_BASE"/>
+      <viewAttribute id="EXCHANGE_RATE"/>
+      <viewAttribute id="INDIRECT_EXCHANGE_RATE"/>
+      <viewAttribute id="TAX_AMOUNT"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#Join_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="ACCOUNTING_PRINCIPLE" source="ACCOUNTING_PRINCIPLE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ACCOUNT_TYPE" source="ACCOUNT_TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BILLING_CATEGORY" source="BILLING_CATEGORY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="BUSINESS_TRANSACTION" source="BUSINESS_TRANSACTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANY_CODE" source="COMPANY_CODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_DATE" source="DOCUMENT_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_STATUS" source="DOCUMENT_STATUS"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_STATUS_DESCRIPTION" source="DOCUMENT_STATUS_DESCRIPTION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_TYPE" source="DOCUMENT_TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ENTRY_DATE" source="ENTRY_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FISCAL_PERIOD" source="FISCAL_PERIOD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FISCAL_YEAR" source="FISCAL_YEAR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="HEADERTEXT" source="HEADERTEXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MESSAGE_GUID" source="MESSAGE_GUID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POSTING_DATE" source="POSTING_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POST_INDICATOR" source="POST_INDICATOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REFERENCE_DOCUMENT" source="REFERENCE_DOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REFERENCE_DOC_NO_LONG" source="REFERENCE_DOC_NO_LONG"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="REFERENCE_KEY" source="REFERENCE_KEY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DOCUMENT" source="SAP_DOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS_CODE" source="STATUS_CODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="STATUS_MESSAGE" source="STATUS_MESSAGE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TRANSLATION_DATE" source="TRANSLATION_DATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="UPDATE_GUID" source="UPDATE_GUID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COST_CENTER" source="COST_CENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GL_ACCOUNT" source="GL_ACCOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_NO" source="ITEM_NO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_TEXT" source="ITEM_TEXT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PARTNER_PROFIT_CENTER" source="PARTNER_PROFIT_CENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PROFIT_CENTER" source="PROFIT_CENTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TRADING_PARTNER" source="TRADING_PARTNER"/>
+    </input>
+    <input node="#GL_CURRENCY">
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT" source="AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMOUNT_BASE" source="AMOUNT_BASE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCY" source="CURRENCY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCY_ISO" source="CURRENCY_ISO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCY_TYPE" source="CURRENCY_TYPE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DISCOUNT_AMOUNT" source="DISCOUNT_AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DISCOUNT_BASE" source="DISCOUNT_BASE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EXCHANGE_RATE" source="EXCHANGE_RATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="INDIRECT_EXCHANGE_RATE" source="INDIRECT_EXCHANGE_RATE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TAX_AMOUNT" source="TAX_AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DOCUMENT" source="SAP_DOCUMENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_NO" source="ITEM_NO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="FISCAL_YEAR" source="FISCAL_YEAR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COMPANY_CODE" source="COMPANY_CODE"/>
+    </input>
+    <joinAttribute name="SAP_DOCUMENT"/>
+    <joinAttribute name="ITEM_NO"/>
+    <joinAttribute name="FISCAL_YEAR"/>
+    <joinAttribute name="COMPANY_CODE"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Join_2">
+  <attributes>
+    <attribute id="ACCOUNTING_PRINCIPLE" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ACCOUNTING_PRINCIPLE"/>
+      <keyMapping columnObjectName="Join_2" columnName="ACCOUNTING_PRINCIPLE"/>
+    </attribute>
+    <attribute id="ACCOUNT_TYPE" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ACCOUNT_TYPE"/>
+      <keyMapping columnObjectName="Join_2" columnName="ACCOUNT_TYPE"/>
+    </attribute>
+    <attribute id="BILLING_CATEGORY" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BILLING_CATEGORY"/>
+      <keyMapping columnObjectName="Join_2" columnName="BILLING_CATEGORY"/>
+    </attribute>
+    <attribute id="BUSINESS_TRANSACTION" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="BUSINESS_TRANSACTION"/>
+      <keyMapping columnObjectName="Join_2" columnName="BUSINESS_TRANSACTION"/>
+    </attribute>
+    <attribute id="COMPANY_CODE" order="5" displayAttribute="false" attributeHierarchyActive="false" transparentFilter="true" key="true">
+      <descriptions defaultDescription="COMPANY_CODE"/>
+      <keyMapping columnObjectName="Join_2" columnName="COMPANY_CODE"/>
+    </attribute>
+    <attribute id="DOCUMENT_DATE" order="6" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DOCUMENT_DATE"/>
+      <keyMapping columnObjectName="Join_2" columnName="DOCUMENT_DATE"/>
+    </attribute>
+    <attribute id="DOCUMENT_STATUS" order="7" displayAttribute="false" attributeHierarchyActive="false" transparentFilter="true">
+      <descriptions defaultDescription="DOCUMENT_STATUS"/>
+      <keyMapping columnObjectName="Join_2" columnName="DOCUMENT_STATUS"/>
+    </attribute>
+    <attribute id="DOCUMENT_STATUS_DESCRIPTION" order="8" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DOCUMENT_STATUS_DESCRIPTION"/>
+      <keyMapping columnObjectName="Join_2" columnName="DOCUMENT_STATUS_DESCRIPTION"/>
+    </attribute>
+    <attribute id="DOCUMENT_TYPE" order="9" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DOCUMENT_TYPE"/>
+      <keyMapping columnObjectName="Join_2" columnName="DOCUMENT_TYPE"/>
+    </attribute>
+    <attribute id="ENTRY_DATE" order="10" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ENTRY_DATE"/>
+      <keyMapping columnObjectName="Join_2" columnName="ENTRY_DATE"/>
+    </attribute>
+    <attribute id="FISCAL_PERIOD" order="11" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="FISCAL_PERIOD"/>
+      <keyMapping columnObjectName="Join_2" columnName="FISCAL_PERIOD"/>
+    </attribute>
+    <attribute id="FISCAL_YEAR" order="12" displayAttribute="false" attributeHierarchyActive="false" key="true" transparentFilter="true">
+      <descriptions defaultDescription="FISCAL_YEAR"/>
+      <keyMapping columnObjectName="Join_2" columnName="FISCAL_YEAR"/>
+    </attribute>
+    <attribute id="HEADERTEXT" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="HEADERTEXT"/>
+      <keyMapping columnObjectName="Join_2" columnName="HEADERTEXT"/>
+    </attribute>
+    <attribute id="MESSAGE_GUID" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MESSAGE_GUID"/>
+      <keyMapping columnObjectName="Join_2" columnName="MESSAGE_GUID"/>
+    </attribute>
+    <attribute id="POSTING_DATE" order="15" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POSTING_DATE"/>
+      <keyMapping columnObjectName="Join_2" columnName="POSTING_DATE"/>
+    </attribute>
+    <attribute id="POST_INDICATOR" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="POST_INDICATOR"/>
+      <keyMapping columnObjectName="Join_2" columnName="POST_INDICATOR"/>
+    </attribute>
+    <attribute id="REFERENCE_DOCUMENT" order="17" displayAttribute="false" attributeHierarchyActive="false" transparentFilter="true">
+      <descriptions defaultDescription="REFERENCE_DOCUMENT"/>
+      <keyMapping columnObjectName="Join_2" columnName="REFERENCE_DOCUMENT"/>
+    </attribute>
+    <attribute id="REFERENCE_DOC_NO_LONG" order="18" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="REFERENCE_DOC_NO_LONG"/>
+      <keyMapping columnObjectName="Join_2" columnName="REFERENCE_DOC_NO_LONG"/>
+    </attribute>
+    <attribute id="REFERENCE_KEY" order="19" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="REFERENCE_KEY"/>
+      <keyMapping columnObjectName="Join_2" columnName="REFERENCE_KEY"/>
+    </attribute>
+    <attribute id="SAP_DOCUMENT" key="true" order="20" displayAttribute="false" attributeHierarchyActive="false" transparentFilter="true">
+      <descriptions defaultDescription="SAP_DOCUMENT"/>
+      <keyMapping columnObjectName="Join_2" columnName="SAP_DOCUMENT"/>
+    </attribute>
+    <attribute id="STATUS_CODE" order="21" displayAttribute="false" attributeHierarchyActive="false" transparentFilter="true">
+      <descriptions defaultDescription="STATUS_CODE"/>
+      <keyMapping columnObjectName="Join_2" columnName="STATUS_CODE"/>
+    </attribute>
+    <attribute id="TRANSLATION_DATE" order="22" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TRANSLATION_DATE"/>
+      <keyMapping columnObjectName="Join_2" columnName="TRANSLATION_DATE"/>
+    </attribute>
+    <attribute id="UPDATE_GUID" order="23" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="UPDATE_GUID"/>
+      <keyMapping columnObjectName="Join_2" columnName="UPDATE_GUID"/>
+    </attribute>
+    <attribute id="COST_CENTER" order="24" displayAttribute="false" attributeHierarchyActive="false" transparentFilter="true">
+      <descriptions defaultDescription="COST_CENTER"/>
+      <keyMapping columnObjectName="Join_2" columnName="COST_CENTER"/>
+    </attribute>
+    <attribute id="GL_ACCOUNT" order="25" displayAttribute="false" attributeHierarchyActive="false" transparentFilter="true">
+      <descriptions defaultDescription="GL_ACCOUNT"/>
+      <keyMapping columnObjectName="Join_2" columnName="GL_ACCOUNT"/>
+    </attribute>
+    <attribute id="ITEM_NO" key="true" order="26" displayAttribute="false" attributeHierarchyActive="false" transparentFilter="true">
+      <descriptions defaultDescription="ITEM_NO"/>
+      <keyMapping columnObjectName="Join_2" columnName="ITEM_NO"/>
+    </attribute>
+    <attribute id="ITEM_TEXT" order="27" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ITEM_TEXT"/>
+      <keyMapping columnObjectName="Join_2" columnName="ITEM_TEXT"/>
+    </attribute>
+    <attribute id="PARTNER_PROFIT_CENTER" order="28" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PARTNER_PROFIT_CENTER"/>
+      <keyMapping columnObjectName="Join_2" columnName="PARTNER_PROFIT_CENTER"/>
+    </attribute>
+    <attribute id="PROFIT_CENTER" order="29" displayAttribute="false" attributeHierarchyActive="false" transparentFilter="true">
+      <descriptions defaultDescription="PROFIT_CENTER"/>
+      <keyMapping columnObjectName="Join_2" columnName="PROFIT_CENTER"/>
+    </attribute>
+    <attribute id="TRADING_PARTNER" order="30" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TRADING_PARTNER"/>
+      <keyMapping columnObjectName="Join_2" columnName="TRADING_PARTNER"/>
+    </attribute>
+    <attribute id="AMOUNT" order="31" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="AMOUNT"/>
+      <keyMapping columnObjectName="Join_2" columnName="AMOUNT"/>
+    </attribute>
+    <attribute id="AMOUNT_BASE" order="32" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="AMOUNT_BASE"/>
+      <keyMapping columnObjectName="Join_2" columnName="AMOUNT_BASE"/>
+    </attribute>
+    <attribute id="CURRENCY" order="33" displayAttribute="false" attributeHierarchyActive="false" transparentFilter="true">
+      <descriptions defaultDescription="CURRENCY"/>
+      <keyMapping columnObjectName="Join_2" columnName="CURRENCY"/>
+    </attribute>
+    <attribute id="CURRENCY_ISO" order="34" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CURRENCY_ISO"/>
+      <keyMapping columnObjectName="Join_2" columnName="CURRENCY_ISO"/>
+    </attribute>
+    <attribute id="CURRENCY_TYPE" order="35" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CURRENCY_TYPE"/>
+      <keyMapping columnObjectName="Join_2" columnName="CURRENCY_TYPE"/>
+    </attribute>
+  
+    <attribute id="DISCOUNT_AMOUNT" order="36" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DISCOUNT_AMOUNT"/>
+      <keyMapping columnObjectName="Join_2" columnName="DISCOUNT_AMOUNT"/>
+    </attribute>
+    <attribute id="DISCOUNT_BASE" order="37" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DISCOUNT_BASE"/>
+      <keyMapping columnObjectName="Join_2" columnName="DISCOUNT_BASE"/>
+    </attribute>
+    <attribute id="EXCHANGE_RATE" order="38" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="EXCHANGE_RATE"/>
+      <keyMapping columnObjectName="Join_2" columnName="EXCHANGE_RATE"/>
+    </attribute>
+    <attribute id="INDIRECT_EXCHANGE_RATE" order="39" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="INDIRECT_EXCHANGE_RATE"/>
+      <keyMapping columnObjectName="Join_2" columnName="INDIRECT_EXCHANGE_RATE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="TAX_AMOUNT" order="40" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="TAX_AMOUNT"/>
+      <measureMapping columnObjectName="Join_2" columnName="TAX_AMOUNT"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="GL_HEADER" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="17" y="360"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="GL_ITEM" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="202" y="337"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="GL_CURRENCY" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="390" y="337"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="123" y="271"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="296" y="190"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

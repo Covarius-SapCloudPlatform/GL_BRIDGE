@@ -1,0 +1,22 @@
+{ 
+    "exposed" : true,
+    "authentication" :
+          [
+                { "method" : "Form" }
+          ], 
+    "prevent_xsrf" : false,
+    "force_ssl" : true,
+    "rewrite_rules":[{
+           "source": "/COV_PKG_API/COV_API_JOURNAL_INPUT/(.*)",
+           "target": "/COV_PKG_API/COV_API_JOURNAL_INPUT.xsjs/$1"
+    },
+    {
+           "source": "/COV_PKG_API/COV_API_GL_RESULT/(.*)",
+           "target": "/COV_PKG_API/COV_API_GL_RESULT.xsjs/$1"
+    },
+     {
+           "source": "/COV_PKG_ODATA/COV_ODATA_GL_RESULTS/(.*)",
+           "target": "/COV_PKG_ODATA/COV_ODATA_GL_RESULTS.xsodata/$1"
+    }],
+    "cache_control" : "private, no-cache, no-store, must-revalidate"
+}
