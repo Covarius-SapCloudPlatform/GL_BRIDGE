@@ -16,6 +16,12 @@
 	// -------------------------------------------------------- // 
 	// Global Variables                                         //
 	// -------------------------------------------------------- //
+	//Import the Conversion Libraries
+	$.import("COV_PKG_VAT.COV_PKG_CONV", "ConversionFunctions");
+	// create a variable for simpler access to the library
+	var ConversionLibrary = $.COV_PKG_VAT.COV_PKG_CONV.ConversionFunctions;
+	// 	var lvTestLeft = ConversionLibrary.VAT_LEFT("Hello", 3);
+
 	//Variable to carry the table update status
 	var gvTableUpdate,
 		gvStatus;
@@ -27,6 +33,8 @@
 	var gvVATSchemaName = 'COV_SCH_VAT';
 	var gvMappingTableName = 'COV_VAT_MAPPING';
 	var gvFieldsSchema = 'COV_SCH_GL_BRIDGE';
+	var gvRuleTable = 'COV_VAT_RULE';
+	var gvRuleLogTable = 'COV_VAT_RULE_LOG';
 	var gvInBatchHeaderTable = 'COV_IN_BATCH_HEADER';
 	var gvInJournalHeader = 'COV_IN_JOURNAL_HEADER';
 	var gvInJournalEntry = 'COV_IN_JOURNAL_ENTRY';
@@ -74,6 +82,13 @@
 					_mapInToOut();
 				} catch (errorObj) {
 					gvStatus = "Error during mapping IN to OUT:" + errorObj.message;
+					$.response.status = 200;
+					$.response.setBody(JSON.stringify({
+						message: "API Called",
+						result: gvErrorMessage,
+						status: gvStatus,
+						tableUpdates: gvTableUpdate
+					}));
 				}
 			}
 		}
@@ -258,12 +273,20 @@
 			for (var i = 0; i < oFields.length; i++) {
 
 				if (oFields[i].IN_TABLE) {
-					if (oFields[i].IN_TABLE === gvInBatchHeaderTable) {
-						gvHeader[oFields[i].OUT_FIELD] = oBody[oFields[i].IN_FIELD];
-					} else if (oFields[i].IN_TABLE === gvInJournalHeader) {
-						gvHeader[oFields[i].OUT_FIELD] = oJournal[oFields[i].IN_FIELD];
-					} else if (oFields[i].IN_TABLE === gvInJournalEntry) {
-						gvHeader[oFields[i].OUT_FIELD] = oJournalItems[0][oFields[i].IN_FIELD];
+					//If no Rule has been assigned, it is a straight mapping
+					if (!oFields[i].RULE || oFields[i].RULE === "0") {
+						if (oFields[i].IN_TABLE === gvInBatchHeaderTable) {
+							gvHeader[oFields[i].OUT_FIELD] = oBody[oFields[i].IN_FIELD];
+						} else if (oFields[i].IN_TABLE === gvInJournalHeader) {
+							gvHeader[oFields[i].OUT_FIELD] = oJournal[oFields[i].IN_FIELD];
+						} else if (oFields[i].IN_TABLE === gvInJournalEntry) {
+							gvHeader[oFields[i].OUT_FIELD] = oJournalItems[0][oFields[i].IN_FIELD];
+						}
+					}
+					//A Rule has been assigned, needs to be executed
+					else {
+						var oRules = _getRules(oFields[i].RULE);
+						gvHeader[oFields[i].OUT_FIELD] = _executeRule(oRules, oBody, oJournal, oJournalItems[0], oFields[i], "0");
 					}
 				}
 			}
@@ -277,9 +300,12 @@
 		//Get the List of Fields maintained in the mapping for Header
 		var oFields = _getFields(gvOutItem);
 		var lvItem;
+		var lvItemNo = 0;
 
 		if (oFields && oJournalItems) {
 			for (var j = 0; j < oJournalItems.length; j++) {
+				//Item
+				lvItemNo = lvItemNo + 1;
 
 				//Define the Resulting Item Structure
 				lvItem = {
@@ -311,12 +337,20 @@
 				for (var i = 0; i < oFields.length; i++) {
 
 					if (oFields[i].IN_TABLE) {
-						if (oFields[i].IN_TABLE === gvInBatchHeaderTable) {
-							lvItem[oFields[i].OUT_FIELD] = oBody[oFields[i].IN_FIELD];
-						} else if (oFields[i].IN_TABLE === gvInJournalHeader) {
-							lvItem[oFields[i].OUT_FIELD] = oJournal[oFields[i].IN_FIELD];
-						} else if (oFields[i].IN_TABLE === gvInJournalEntry) {
-							lvItem[oFields[i].OUT_FIELD] = oJournalItems[j][oFields[i].IN_FIELD];
+						//If no Rule has been assigned, it is a straight mapping
+						if (!oFields[i].RULE || oFields[i].RULE === "0") {
+							if (oFields[i].IN_TABLE === gvInBatchHeaderTable) {
+								lvItem[oFields[i].OUT_FIELD] = oBody[oFields[i].IN_FIELD];
+							} else if (oFields[i].IN_TABLE === gvInJournalHeader) {
+								lvItem[oFields[i].OUT_FIELD] = oJournal[oFields[i].IN_FIELD];
+							} else if (oFields[i].IN_TABLE === gvInJournalEntry) {
+								lvItem[oFields[i].OUT_FIELD] = oJournalItems[j][oFields[i].IN_FIELD];
+							}
+						}
+						//A Rule has been assigned, needs to be executed
+						else {
+							var oRules = _getRules(oFields[i].RULE);
+							lvItem[oFields[i].OUT_FIELD] = _executeRule(oRules, oBody, oJournal, oJournalItems[j], oFields[i], lvItemNo);
 						}
 					}
 				}
@@ -334,9 +368,12 @@
 		//Get the List of Fields maintained in the mapping for Header
 		var oFields = _getFields(gvOutCurrency);
 		var lvCurrency;
+		var lvItemNo = 0;
 
 		if (oFields && oJournalItems) {
 			for (var j = 0; j < oJournalItems.length; j++) {
+				//Item
+				lvItemNo = lvItemNo + 1;
 
 				//Define the Resulting Item Structure
 				lvCurrency = {
@@ -357,12 +394,20 @@
 				for (var i = 0; i < oFields.length; i++) {
 
 					if (oFields[i].IN_TABLE) {
-						if (oFields[i].IN_TABLE === gvInBatchHeaderTable) {
-							lvCurrency[oFields[i].OUT_FIELD] = oBody[oFields[i].IN_FIELD];
-						} else if (oFields[i].IN_TABLE === gvInJournalHeader) {
-							lvCurrency[oFields[i].OUT_FIELD] = oJournal[oFields[i].IN_FIELD];
-						} else if (oFields[i].IN_TABLE === gvInJournalEntry) {
-							lvCurrency[oFields[i].OUT_FIELD] = oJournalItems[j][oFields[i].IN_FIELD];
+						//If no Rule has been assigned, it is a straight mapping
+						if (!oFields[i].RULE || oFields[i].RULE === "0") {
+							if (oFields[i].IN_TABLE === gvInBatchHeaderTable) {
+								lvCurrency[oFields[i].OUT_FIELD] = oBody[oFields[i].IN_FIELD];
+							} else if (oFields[i].IN_TABLE === gvInJournalHeader) {
+								lvCurrency[oFields[i].OUT_FIELD] = oJournal[oFields[i].IN_FIELD];
+							} else if (oFields[i].IN_TABLE === gvInJournalEntry) {
+								lvCurrency[oFields[i].OUT_FIELD] = oJournalItems[j][oFields[i].IN_FIELD];
+							}
+						}
+						//A Rule has been assigned, needs to be executed
+						else {
+							var oRules = _getRules(oFields[i].RULE);
+							lvCurrency[oFields[i].OUT_FIELD] = _executeRule(oRules, oBody, oJournal, oJournalItems[j], oFields[i], lvItemNo);
 						}
 					}
 				}
@@ -396,12 +441,20 @@
 				var record = {
 					IN_TABLE: oResultSet.getString(1),
 					IN_FIELD: oResultSet.getString(2),
-					IN_TABLE_ALIAS: oResultSet.getString(3),
-					OUT_TABLE: oResultSet.getString(4),
-					OUT_FIELD: oResultSet.getString(5),
-					OUT_TABLE_ALIAS: oResultSet.getString(6),
-					MANDATORY: oResultSet.getString(7),
-					RULE: oResultSet.getString(8)
+					IN_TABLE2: oResultSet.getString(3),
+					IN_FIELD2: oResultSet.getString(4),
+					IN_TABLE3: oResultSet.getString(5),
+					IN_FIELD3: oResultSet.getString(6),
+					IN_TABLE4: oResultSet.getString(7),
+					IN_FIELD4: oResultSet.getString(8),
+					IN_TABLE5: oResultSet.getString(9),
+					IN_FIELD5: oResultSet.getString(10),
+					IN_TABLE_ALIAS: oResultSet.getString(11),
+					OUT_TABLE: oResultSet.getString(12),
+					OUT_FIELD: oResultSet.getString(13),
+					OUT_TABLE_ALIAS: oResultSet.getString(14),
+					MANDATORY: oResultSet.getString(15),
+					RULE: oResultSet.getString(16)
 				};
 				oResult.records.push(record);
 				record = "";
@@ -422,6 +475,389 @@
 			if (oConnection !== null) {
 				oConnection.close();
 			}
+		}
+	}
+
+	// -------------------------------------------------------- // 
+	// Function to get the List of Rules to be executed on a    //
+	// specific mapping                                         //
+	// -------------------------------------------------------- //
+	function _getRules(pRuleId) {
+		try {
+			//Variable to keep query statement 
+			var lvQuery = 'SELECT * FROM "' + gvVATSchemaName + '"."' + gvRuleTable + '"';
+			var lvQuery = lvQuery + ' WHERE "ID" = ' + "'" + pRuleId + "'";
+
+			//Connect to the Database and execute the query
+			var oConnection = $.db.getConnection();
+			var oStatement = oConnection.prepareStatement(lvQuery);
+			oStatement.execute();
+			var oResultSet = oStatement.getResultSet();
+			var oResult = {
+				records: []
+			};
+			while (oResultSet.next()) {
+
+				var record = {
+					ID: oResultSet.getString(1),
+					LEVEL: oResultSet.getString(2),
+					FUNCTION: oResultSet.getString(3),
+					PARAMETER1: oResultSet.getString(4),
+					PARAMETER2: oResultSet.getString(5),
+					PARAMETER3: oResultSet.getString(6),
+					PARAMETER4: oResultSet.getString(7),
+					PARAMETER5: oResultSet.getString(8),
+					RESULT: oResultSet.getString(9),
+					RULE_STRING: oResultSet.getString(10)
+				};
+				oResult.records.push(record);
+				record = "";
+			}
+
+			oResultSet.close();
+			oStatement.close();
+			oConnection.close();
+
+			//Return the result
+			return oResult.records;
+
+		} catch (errorObj) {
+			gvErrorMessage = errorObj.message;
+			if (oStatement !== null) {
+				oStatement.close();
+			}
+			if (oConnection !== null) {
+				oConnection.close();
+			}
+		}
+	}
+
+	// -------------------------------------------------------- // 
+	// Function to Execute the Rules         				    //
+	// -------------------------------------------------------- //
+	function _executeRule(oRules, oBody, oJournal, oJournalItem, oFields, pItem) {
+		//Variables for Rule Parameters
+		var lvParameter1 = "",
+			lvParameter2 = "",
+			lvParameter3 = "",
+			lvParameter4 = "",
+			lvParameter5 = "",
+			lvReturn;
+
+		//Execute Rules
+		for (var j = 0; j < oRules.length; j++) {
+			//Perform the Function
+			switch (oRules[j].FUNCTION) {
+				case "LEFT":
+					//Get Parameter 1 Value
+					var lvInTable,
+						lvInField;
+
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER1) {
+						var oSplit = oRules[j].PARAMETER1.split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter1 = oBody[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter1 = oJournal[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter1 = oJournalItem[oFields.IN_FIELD];
+							}
+						}
+						//It is a Constant
+						else {
+							lvParameter1 = oRules[j].PARAMETER1;
+						}
+					}
+
+					//Other Parameters
+					lvParameter2 = parseFloat(oRules[j].PARAMETER2);
+					//Call Conversion Functions
+					lvReturn = ConversionLibrary.VAT_LEFT(lvParameter1, lvParameter2);
+
+					break;
+				case "RIGHT":
+					//Get Parameter 1 Value
+					var lvInTable,
+						lvInField;
+
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER1) {
+						var oSplit = oRules[j].PARAMETER1.split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter1 = oBody[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter1 = oJournal[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter1 = oJournalItem[oFields.IN_FIELD];
+							}
+						}
+						//It is a Constant
+						else {
+							lvParameter1 = oRules[j].PARAMETER1;
+						}
+					}
+
+					//Other Parameters
+					lvParameter2 = parseFloat(oRules[j].PARAMETER2);
+					//Call Conversion Function
+					lvReturn = ConversionLibrary.VAT_RIGHT(lvParameter1, lvParameter2);
+
+					break;
+				case "MID":
+					//Get Parameter 1 Value
+					var lvInTable,
+						lvInField;
+
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER1) {
+						var oSplit = oRules[j].PARAMETER1.split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter1 = oBody[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter1 = oJournal[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter1 = oJournalItem[oFields.IN_FIELD];
+							}
+						}
+						//It is a Constant
+						else {
+							lvParameter1 = oRules[j].PARAMETER1;
+						}
+					}
+
+					//Other Parameters
+					lvParameter2 = parseFloat(oRules[j].PARAMETER2);
+					lvParameter3 = parseFloat(oRules[j].PARAMETER3);
+					//Call Conversion Function
+					lvReturn = ConversionLibrary.VAT_MID(lvParameter1, lvParameter2, lvParameter3);
+
+					break;
+				case "CONCATENATE":
+					//Get Parameter 1 Value
+					var lvInTable,
+						lvInField;
+
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER1) {
+						var oSplit = oRules[j].PARAMETER1.split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter1 = oBody[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter1 = oJournal[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter1 = oJournalItem[oFields.IN_FIELD];
+							}
+						}
+						//It is a Constant
+						else {
+							lvParameter1 = oRules[j].PARAMETER1;
+						}
+					}
+
+					//Get Parameter 2 Value
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER2) {
+						oSplit = oRules[j].PARAMETER2.split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter2 = oBody[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter2 = oJournal[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter2 = oJournalItem[oFields.IN_FIELD];
+							}
+						}
+						//It is a Constant
+						else {
+							lvParameter2 = oRules[j].PARAMETER2;
+						}
+					}
+
+					//Get Parameter 3 Value
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER3) {
+						oSplit = oRules[j].PARAMETER3.split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter3 = oBody[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter3 = oJournal[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter3 = oJournalItem[oFields.IN_FIELD];
+							}
+						}
+						//It is a Constant
+						else {
+							lvParameter3 = oRules[j].PARAMETER2;
+						}
+					}
+
+					//Get Parameter 4 Value
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER4) {
+						oSplit = oRules[j].PARAMETER4.split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter4 = oBody[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter4 = oJournal[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter4 = oJournalItem[oFields.IN_FIELD];
+							}
+						}
+						//It is a Constant
+						else {
+							lvParameter4 = oRules[j].PARAMETER2;
+						}
+					}
+
+					//Get Parameter 5 Value
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER5) {
+						oSplit = oRules[j].PARAMETER5.split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter5 = oBody[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter5 = oJournal[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter5 = oJournalItem[oFields.IN_FIELD];
+							}
+						}
+						//It is a Constant
+						else {
+							lvParameter5 = oRules[j].PARAMETER2;
+						}
+					}
+
+					lvReturn = ConversionLibrary.VAT_CONCATENATE(lvParameter1, lvParameter2, lvParameter3, lvParameter4, lvParameter5);
+					break;
+			}
+
+			//Log the Result to the Rule Logging Table
+			_logRuleResult(oRules[j], pItem, lvParameter1, lvParameter2, lvParameter3, lvParameter4, lvParameter5, lvReturn);
+		}
+
+		return lvReturn;
+	}
+
+	// -------------------------------------------------------- // 
+	// Function to save entry to header table 				    //
+	// -------------------------------------------------------- //
+	function _logRuleResult(oRules, pItem, pParameter1, pParameter2, pParameter3, pParameter4, pParameter5, pReturn) {
+		try {
+			//Get the Database connection
+			var oConnection = $.db.getConnection();
+
+			//Build the Statement to insert the entries for Batch Table
+			var oStatement = oConnection.prepareStatement('INSERT INTO "' + gvVATSchemaName + '"."' + gvRuleLogTable +
+				'" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+
+			//Populate the fields with values from the incoming payload
+			//Message GUID
+			oStatement.setString(1, gvGuid);
+			//Id
+			oStatement.setInt(2, parseFloat(oRules.ID));
+			//Level
+			oStatement.setInt(3, parseFloat(oRules.LEVEL));
+			//Item No
+			oStatement.setString(4, pItem.toString());
+			//Date
+			var lvDate = new Date();
+			var lvDateString = lvDate.toISOString().substring(0, 10);
+			oStatement.setString(5, lvDateString);
+			//Function
+			oStatement.setString(6, oRules.FUNCTION);
+			//Parameter1
+			if (pParameter1) {
+				oStatement.setString(7, pParameter1.toString());
+			} else {
+				oStatement.setString(7, "");
+			}
+			//Parameter2
+			if (pParameter2) {
+				oStatement.setString(8, pParameter2.toString());
+			} else {
+				oStatement.setString(8, "");
+			}
+			//Parameter3
+			if (pParameter3) {
+				oStatement.setString(9, pParameter3.toString());
+			} else {
+				oStatement.setString(9, "");
+			}
+			//Parameter4
+			if (pParameter4) {
+				oStatement.setString(10, pParameter4.toString());
+			} else {
+				oStatement.setString(10, "");
+			}
+			//Parameter5
+			if (pParameter5) {
+				oStatement.setString(11, pParameter5.toString());
+			} else {
+				oStatement.setString(11, "");
+			}
+			//Result
+			oStatement.setString(12, pReturn.toString());
+
+			//Add Batch process to executed on the database
+			oStatement.addBatch();
+
+			//Execute the Insert
+			oStatement.executeBatch();
+
+			//Close the connection
+			oStatement.close();
+			oConnection.commit();
+			oConnection.close();
+
+			gvTableUpdate += "Table entries created successfully in table:" + gvRuleLogTable + ";";
+		} catch (errorObj) {
+			if (oStatement !== null) {
+				oStatement.close();
+			}
+			if (oConnection !== null) {
+				oConnection.close();
+			}
+			gvTableUpdate += "There was a problem inserting entries into the table:" + gvRuleLogTable + ", Error: " + errorObj.message;
 		}
 	}
 
@@ -483,7 +919,7 @@
 			oConnection.commit();
 			oConnection.close();
 
-			gvTableUpdate = "Table entries created successfully in table:" + gvOutHeader + ";";
+			gvTableUpdate += "Table entries created successfully in table:" + gvOutHeader + ";";
 			lvStatus = "SUCCESS";
 		} catch (errorObj) {
 			if (oStatement !== null) {
@@ -492,7 +928,7 @@
 			if (oConnection !== null) {
 				oConnection.close();
 			}
-			gvTableUpdate = "There was a problem inserting entries into the table:" + gvOutHeader + ", Error: " + errorObj.message;
+			gvTableUpdate += "There was a problem inserting entries into the table:" + gvOutHeader + ", Error: " + errorObj.message;
 			lvStatus = "ERROR";
 		}
 		return lvStatus;
