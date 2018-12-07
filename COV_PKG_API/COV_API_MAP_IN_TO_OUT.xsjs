@@ -20,7 +20,6 @@
 	$.import("COV_PKG_VAT.COV_PKG_CONV", "ConversionFunctions");
 	// create a variable for simpler access to the library
 	var ConversionLibrary = $.COV_PKG_VAT.COV_PKG_CONV.ConversionFunctions;
-	// 	var lvTestLeft = ConversionLibrary.VAT_LEFT("Hello", 3);
 
 	//Variable to carry the table update status
 	var gvTableUpdate,
@@ -49,8 +48,10 @@
 	var gtItem = [];
 	var gtCurrency = [];
 
-	//Indicate if Service is to be updated or Deleted
+	//Indicate if Mapping is to be performed
 	var gvMethod = $.request.parameters.get('method');
+	//Check if is a test run
+	var gvExecution = $.request.parameters.get('execution');
 	var gvErrorMessage;
 
 	//Get the Message Guid from HTTP Header
@@ -128,15 +129,21 @@
 
 		//Map the Header Fields
 		_mapHeader(oBody, oJournal, oJournalItems);
-		_saveHeader();
+		if (gvExecution !== "TEST") {
+			_saveHeader();
+		}
 
 		//Map the Item Fields
 		_mapItem(oBody, oJournal, oJournalItems);
-		_saveItem();
+		if (gvExecution !== "TEST") {
+			_saveItem();
+		}
 
 		//Map the Currency Fields
 		_mapCurrency(oBody, oJournal, oJournalItems);
-		_saveCurrency();
+		if (gvExecution !== "TEST") {
+			_saveCurrency();
+		}
 
 		//Build the Return Item
 		var lvItem,
@@ -508,8 +515,9 @@
 					PARAMETER3: oResultSet.getString(6),
 					PARAMETER4: oResultSet.getString(7),
 					PARAMETER5: oResultSet.getString(8),
-				// 	RESULT: oResultSet.getString(9),
-					RULE_STRING: oResultSet.getString(9)
+					// 	RESULT: oResultSet.getString(9),
+					RULE_STRING: oResultSet.getString(9),
+					FULL_RULE_STRING: oResultSet.getString(10)
 				};
 				oResult.records.push(record);
 				record = "";
@@ -832,10 +840,148 @@
 					lvReturn = ConversionLibrary.VAT_LOOKUP(lvParameter1, lvParameter2);
 
 					break;
+				case "IF":
+					//Get Parameter 1 Value
+					var lvInTable,
+						lvInField,
+						lvOperator;
+
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER1) {
+						var oOperatorSplit = oRules[j].PARAMETER1.split("=");
+
+						if (!oOperatorSplit.length > 1) {
+							oOperatorSplit = oRules[j].PARAMETER1.split("!=");
+						} else {
+							if (!lvOperator) lvOperator = "=";
+						}
+
+						if (!oOperatorSplit.length > 1) {
+							oOperatorSplit = oRules[j].PARAMETER1.split(">");
+						} else {
+							if (!lvOperator) lvOperator = "!=";
+						}
+
+						if (!oOperatorSplit.length > 1) {
+							oOperatorSplit = oRules[j].PARAMETER1.split("<");
+						} else {
+							if (!lvOperator) lvOperator = ">";
+						}
+
+						if (!oOperatorSplit.length > 1) {
+							oOperatorSplit = oRules[j].PARAMETER1.split(">=");
+						} else {
+							if (!lvOperator) lvOperator = "<";
+						}
+
+						if (!oOperatorSplit.length > 1) {
+							oOperatorSplit = oRules[j].PARAMETER1.split("<=");
+						} else {
+							if (!lvOperator) lvOperator = ">=";
+						}
+
+						if (!oOperatorSplit.length > 1) {
+							oOperatorSplit = oRules[j].PARAMETER1.split("<>");
+						} else {
+							if (!lvOperator) lvOperator = "<=";
+						}
+
+						if (!lvOperator) {
+							lvOperator = "<>";
+						}
+
+						var oSplit = oOperatorSplit[0].split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter1 = oBody[oFields.IN_FIELD];
+								if (!lvParameter1) lvParameter1 = "";
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter1 = oJournal[oFields.IN_FIELD];
+								if (!lvParameter1) lvParameter1 = "";
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter1 = oJournalItem[oFields.IN_FIELD];
+								if (!lvParameter1) lvParameter1 = "";
+							} else if (lvInTable === gvLevel) {
+								lvLevelIndex = parseFloat(lvInField) - 1;
+								lvParameter1 = oLevel[lvLevelIndex];
+								if (!lvParameter1) lvParameter1 = "";
+							}
+							// 			lvParameter1 = lvParameter1 + " " + lvOperator + " " + oOperatorSplit[1];
+						}
+						//It is a Constant
+						else {
+							lvParameter1 = oRules[j].PARAMETER1;
+						}
+					}
+
+					//Get Parameter 2 Value
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER2) {
+						oSplit = oRules[j].PARAMETER2.split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter2 = oBody[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter2 = oJournal[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter2 = oJournalItem[oFields.IN_FIELD];
+							} else if (lvInTable === gvLevel) {
+								lvLevelIndex = parseFloat(lvInField) - 1;
+								lvParameter2 = oLevel[lvLevelIndex];
+							}
+						}
+						//It is a Constant
+						else {
+							lvParameter2 = oRules[j].PARAMETER2;
+						}
+					}
+
+					//Get Parameter 3 Value
+					//Check if it is a Table and Field
+					if (oRules[j].PARAMETER3) {
+						oSplit = oRules[j].PARAMETER3.split(".");
+						//It is a Table and Field
+						if (oSplit.length > 1) {
+							lvInTable = oSplit[0];
+							lvInField = oSplit[1];
+
+							if (lvInTable === gvInBatchHeaderTable) {
+								lvParameter3 = oBody[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalHeader) {
+								lvParameter3 = oJournal[oFields.IN_FIELD];
+							} else if (lvInTable === gvInJournalEntry) {
+								lvParameter3 = oJournalItem[oFields.IN_FIELD];
+							} else if (lvInTable === gvLevel) {
+								lvLevelIndex = parseFloat(lvInField) - 1;
+								lvParameter3 = oLevel[lvLevelIndex];
+							}
+						}
+						//It is a Constant
+						else {
+							lvParameter3 = oRules[j].PARAMETER3;
+						}
+					}
+
+					//Call Conversion Function
+					if (lvParameter1 && lvParameter2 && lvParameter3) {
+						lvReturn = ConversionLibrary.VAT_IF(lvParameter1, lvOperator, oOperatorSplit[1], lvParameter2, lvParameter3);
+					}
+
+					break;
 			}
 
 			//Log the Result to the Rule Logging Table
-			_logRuleResult(oRules[j], pItem, lvParameter1, lvParameter2, lvParameter3, lvParameter4, lvParameter5, lvReturn);
+			if (gvExecution !== "TEST") {
+				_logRuleResult(oRules[j], pItem, lvParameter1, lvParameter2, lvParameter3, lvParameter4, lvParameter5, lvReturn);
+			}
 
 			oLevel.push(lvReturn);
 		}
@@ -874,13 +1020,13 @@
 			if (pParameter1) {
 				oStatement.setString(7, pParameter1.toString());
 			} else {
-				oStatement.setString(7, "");
+				oStatement.setString(7, "0");
 			}
 			//Parameter2
 			if (pParameter2) {
 				oStatement.setString(8, pParameter2.toString());
 			} else {
-				oStatement.setString(8, "");
+				oStatement.setString(8, "0");
 			}
 			//Parameter3
 			if (pParameter3) {
